@@ -1,0 +1,33 @@
+@charset "UTF-8";
+@import 'compass/css3';
+.json-view{
+  border:1px solid;
+  ul{
+    list-style-type: none;
+  }
+  .property{
+    font-weight: 700;
+  }
+  .type-array{
+    display: block;
+//    &:before{
+//      content:"[";
+//      display: block;
+//    }
+//    &:after{
+//      content:"]";
+//      display: block;
+//    }
+  }
+  .type-object{
+    display: block;
+//    &:before{
+//      content:"{";
+//      display: block;
+//    }
+//    &:after{
+//      content:"}";
+//      display: block;
+//    }
+  }
+}

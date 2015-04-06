@@ -1,0 +1,34 @@
+angular.module("json.view").controller("demoCtrl",($scope)->
+  $scope.object = {
+    name:"cy"
+    email:"cy@fir.im"
+    desc:
+      url:"fir.im"
+      incode:"utr-8"
+  }
+  $scope.arrayObject = {
+    name:"cy"
+    email:"cy@fir.im"
+    desc:
+      url:"fir.im"
+      incode:"utr-8"
+    apps:[
+      {
+        name:"app1"
+        short:"/app"
+      }
+      {
+        name:"app2"
+        short:"/2app"
+      }
+      {
+        name:"app3"
+        short:"/3app"
+      }
+      {
+        name:"app4"
+        short:"/4app"
+      }
+    ]
+  }
+)

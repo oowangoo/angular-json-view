@@ -1,40 +1,47 @@
 gulp = require 'gulp'
 coffee = require 'gulp-coffee'
-sass = require 'gulp-sass'
+compass = require 'gulp-compass'
 clean = require "gulp-clean"
 plumber = require 'gulp-plumber'
 connect = require 'gulp-connect'
+gutil = require 'gulp-util'
+
 paths = {
   coffee:"src/**/*.coffee"
-  sass:"src/**/*.scss"
+  compass:"src/**/*.scss"
   html:"src/**/*.html"
 }
 
-gulp.task('sass',(done)->
-  gulp.src(paths.sass)
-    .pipe(plumber())
-    .pipe(sass())
-    .pipe(gulp.dest('www/'))
+gulp.task('compass',(done)->
+  gulp.src("src/**/*.scss")
+    .pipe(compass({
+      sass:"src"
+      css:"www"
+    }))
+    .pipe(connect.reload())
 )
 
 gulp.task('coffee',(done)->
   gulp.src(paths.coffee)
-    .pipe(plumber())
+  .pipe(plumber())
     .pipe(coffee())
+    .on('error',gutil.log)
     .pipe(gulp.dest('www/'))
+    .pipe(connect.reload())
 )
 
 gulp.task('clean',(done)->
-  gulp.src('www/',{read:false}).pipe(clean())
+  gulp.src('www/**/*',{read:false}).pipe(clean())
 )
 
 gulp.task('watch',(done)->
-  gulp.watch(paths.sass,['sass','reload'])
-  gulp.watch(paths.coffee,['coffee','reload'])
+  gulp.watch(paths.compass,['compass'])
+  gulp.watch(paths.coffee,['coffee'])
+  gulp.watch(paths.html,['copy'])
 )
 
-gulp.task('copy',(done)->
-  gulp.src(paths.html,{read:false}).pipe(gulp.dest('www/'))
+gulp.task('copy',()->
+  gulp.src(paths.html).pipe(gulp.dest('www/')).pipe(connect.reload())
 )
 gulp.task('reload',()->
   connect.reload()
@@ -48,4 +55,7 @@ gulp.task('connect',(done)->
 )
 
 
-gulp.task('build',['clean','sass','coffee','copy'])
+gulp.task('build',['clean','compass','coffee','copy'])
+gulp.task('server',['build','watch','connect'])
+
+gulp.task('s',['server'])
