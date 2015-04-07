@@ -16,16 +16,18 @@ paths = {
     compile:"test/compile"
 }
 
-gulp.task('compass',['clean'],(done)->
+gulp.task('compass',(done)->
   gulp.src("src/**/*.scss")
+    .pipe(plumber())
     .pipe(compass({
       sass:"src"
       css:"www"
     }))
+    .on('error',gutil.log)
     .pipe(connect.reload())
 )
 
-gulp.task('coffee',['clean'],(done)->
+gulp.task('coffee',(done)->
   gulp.src(paths.coffee)
     .pipe(plumber())
     .pipe(coffee())
