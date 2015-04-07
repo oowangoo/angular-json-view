@@ -34,7 +34,4 @@ angular.module("json.view").controller("demoCtrl",($scope,$http)->
     ]
     emptyApps : []
   }
-  $http.get("http://fir.im/api/v2/app/info/53ec9b58999aeac87f000c7a").then((data)->
-    $scope.object = data
-  )
 )
