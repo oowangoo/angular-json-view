@@ -32,8 +32,8 @@ angular.module('json.view').directive('jsonView', ($compile) ->
             ele = "<li class='#{liCls}'><div class='content-warp'>#{collapser}#{prix}<span>" + jsonArray(p.value) + "</span></div></li>"
           when 2
             liCls = 'collapsible'
-            liEle = $("<li></li>")
-            warp = $("<div class='content-warp'></div>")
+            liEle = angular.element("<li></li>")
+            warp = angular.element("<div class='content-warp'></div>")
             warp.append(collapser)
             warp.append(prix)
             objecEle = jsonObject(p.value,liEle)
@@ -86,7 +86,8 @@ angular.module('json.view').directive('jsonView', ($compile) ->
 
       scope.toggle = (event)->
         target =event.target
-        li = $(target).parents("li:eq(0)")
+        #jqite no support parents method
+        li = angular.element(target).parent().parent() 
         li.toggleClass("selected")
         event.stopPropagation()
         return ;
