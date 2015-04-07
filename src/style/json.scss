@@ -3,27 +3,11 @@
 .json-view{
   border:1px solid;
   margin-bottom: 20px;
-  font-family: "Helvetica Neue", Helvetica, Microsoft Yahei, Hiragino Sans GB, WenQuanYi Micro Hei, sans-serif;
   ul{
     list-style-type: none;
     margin:0px;
     li{
       position: relative;
-      .content-warp{
-        &:after{
-          content:","
-        }
-      }
-      &:last-child{
-        .content-warp{
-          &:after{
-            content:'';
-          }
-        }
-      }
-    }
-    &:empty{
-      display: inline-block;
     }
   }
   .content-warp{
@@ -67,8 +51,5 @@
   }
   .property{
     font-weight: bold;
-  }
-  .type{
-    display: block;
   }
 }

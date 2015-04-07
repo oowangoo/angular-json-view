@@ -8,30 +8,9 @@ angular.module("json.view").controller("demoCtrl",($scope,$http)->
     emptyObj:{}
     xxx:null
   }
-  $scope.arrayObject = {
-    name:"cy"
-    email:"cy@fir.im"
-    desc:
-      url:"fir.im"
-      incode:"utf-8"
-    apps:[
-      {
-        name:"app1"
-        short:"/app"
-      }
-      {
-        name:"app2"
-        short:"/2app"
-      }
-      {
-        name:"app3"
-        short:"/3app"
-      }
-      {
-        name:"app4"
-        short:"/4app"
-      }
-    ]
-    emptyApps : []
-  }
+  $scope.arrayObject = [
+      {name:"1",vvv:'1'}
+      {name:"2",vvv:'2'}
+      {name:"3",vvv:'3'}
+      {name:"4",vvv:[{name:"41",vvv:'42'}]}]
 )
