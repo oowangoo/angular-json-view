@@ -2,32 +2,73 @@
 @import 'compass/css3';
 .json-view{
   border:1px solid;
+  margin-bottom: 20px;
+  font-family: "Helvetica Neue", Helvetica, Microsoft Yahei, Hiragino Sans GB, WenQuanYi Micro Hei, sans-serif;
   ul{
     list-style-type: none;
+    margin:0px;
+    li{
+      position: relative;
+      .content-warp{
+        &:after{
+          content:","
+        }
+      }
+      &:last-child{
+        .content-warp{
+          &:after{
+            content:'';
+          }
+        }
+      }
+    }
+    &:empty{
+      display: inline-block;
+    }
+  }
+  .content-warp{
+    display: inline-block;
+    border:1px solid transparent;
+  }
+
+  .collapser{
+    display: none;
+    cursor: pointer;
+    &:before{
+      content:"-"
+    }
+  }
+  .ellipsis{
+    display: none;
+  }
+
+  .collapsible{
+    .collapser{
+      display: inline;
+    }
+    &.selected{
+      ul{
+        display: none;
+      }
+      .collapser{
+        &:before{
+          content:"+";
+        }
+      }
+      .ellipsis{
+        display: inline;
+      }
+    }
+  }
+  .abs-left{
+    position: absolute;
+    left: -1.5em;
+    padding:0px 6px;
   }
   .property{
-    font-weight: 700;
+    font-weight: bold;
   }
-  .type-array{
+  .type{
     display: block;
-//    &:before{
-//      content:"[";
-//      display: block;
-//    }
-//    &:after{
-//      content:"]";
-//      display: block;
-//    }
-  }
-  .type-object{
-    display: block;
-//    &:before{
-//      content:"{";
-//      display: block;
-//    }
-//    &:after{
-//      content:"}";
-//      display: block;
-//    }
   }
 }

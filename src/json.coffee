@@ -17,25 +17,41 @@ angular.module('json.view').directive('jsonView', ($compile) ->
         else if angular.isString(obj) or angular.isNumber obj
           return 3;
         return 0
-
+      ellipsis = "<span class='ellipsis'>...</span>"
       propertyToHTML = (p)->
         ele = '' 
         if p.name
-          prix = "<span class='property'>#{p.name}</span>:"
+          prix = "<span class='property'>#{p.name}</span>: "
         else 
           prix = ''
+        collapser = "<span class='abs-left collapser' ng-click='toggle($event)'></span>"
+        
         switch objectType(p.value)
           when 1
-            ele = "<li>#{prix}<span>" + jsonArray(p.value) + "</span></li>"
+            liCls = if p.value and p.value.length > 0 then 'collapsible' else ''
+            ele = "<li class='#{liCls}'><div class='content-warp'>#{collapser}#{prix}<span>" + jsonArray(p.value) + "</span></div></li>"
           when 2
-            ele = "<li>#{prix}<span>" + jsonObject(p.value)  + "</span></li>"
+            liCls = 'collapsible'
+            liEle = $("<li></li>")
+            warp = $("<div class='content-warp'></div>")
+            warp.append(collapser)
+            warp.append(prix)
+            objecEle = jsonObject(p.value,liEle)
+            warp.append(objecEle)
+            liEle.append(warp)
+            ele = liEle[0].outerHTML
           else
-            ele = "<li>#{prix}<span class='type-string'>#{p.value}</span></li>"
+            ele = "<li><div class='content-warp'>#{prix}<span class='type-string'>#{p.value}</span></div></li>"
         return ele
 
-      jsonObject = (pobj)->
-        eleArray = "<span class='before-cls'>{</span><ul class='type-object'>"
+      jsonObject = (pobj,parentEle)->
+        eleArray = "<span class='before-cls'>{</span>#{ellipsis}<ul class='type type-object'>"
+        hasProperty = false
         angular.forEach pobj, (value, key) ->
+          if !hasProperty
+            hasProperty = true
+            if parentEle
+              parentEle.addClass("collapsible")
           p = {}
           p.value = value
           p.name = key
@@ -45,7 +61,7 @@ angular.module('json.view').directive('jsonView', ($compile) ->
         return eleArray
 
       jsonArray = (pArray)->
-        eleArray = "<span class='before-cls'>[</span><ul class='type-object'>"
+        eleArray = "<span class='before-cls'>[</span>#{ellipsis}<ul class='type type-array'>"
         for pobj in pArray
           p = {}
           p.value = pobj
@@ -53,17 +69,30 @@ angular.module('json.view').directive('jsonView', ($compile) ->
           eleArray += ele
         eleArray += "</ul><span class='after-cls'>]</span>"
 
-      html  = ""
-      switch objectType(scope.object)
-        when 1
-          html = jsonArray(scope.object)
-        when 2
-          html = jsonObject(scope.object)
-        when 3
-          html = '<span class="type-srting" ng-bind="obj"></span>'
-        else
-          html = '<span class="type" ng-bind="obj"></span>'
-      ele = $compile(html)(scope)
-      iElement.append(ele)
+      init = ()->
+        iElement.html('')
+        html  = ""
+        switch objectType(scope.object)
+          when 1
+            html = jsonArray(scope.object)
+          when 2
+            html = jsonObject(scope.object)
+          when 3
+            html = '<span class="type type-srting" ng-bind="obj"></span>'
+          else
+            html = '<span class="type" ng-bind="obj"></span>'
+        ele = $compile(html)(scope)
+        iElement.append(ele)
+
+      scope.toggle = (event)->
+        target =event.target
+        li = $(target).parents("li:eq(0)")
+        li.toggleClass("selected")
+        event.stopPropagation()
+        return ;
+      scope.$watch('object',()->
+        init()
+      )
+      init()
   return directiveDefinitionObject
 )
