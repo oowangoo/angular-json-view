@@ -89,5 +89,8 @@ describe('tttt',()->
 
       }
     }
+    element = compileElement(obj)
+    expect(toEqualElement(obj,element)).toBeTruthy()
   )
+
 )
