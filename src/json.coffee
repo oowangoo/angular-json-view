@@ -110,7 +110,7 @@ angular.module('json.view').directive('jsonView', ($compile) ->
         iElement.html('')
         html  = ""
         type = objectType(scope.object)
-        if type > 2
+        if type > 2 or type  is 0 
           console.error 'the object must be [object]',scope.object
           return ;
         root = new objectHTML(null,scope.object)
@@ -126,10 +126,10 @@ angular.module('json.view').directive('jsonView', ($compile) ->
         li.toggleClass("selected")
         event.stopPropagation()
         return ;
-
+      if scope.object
+        init()
       scope.$watch('object',()->
         init()
       )
-      init()
   return directiveDefinitionObject
 )
