@@ -7,6 +7,7 @@ angular.module("json.view").controller("demoCtrl",($scope,$http)->
       incode:"utr-8"
     emptyObj:{}
     xxx:null
+    number:1
   }
   $scope.arrayObject = [
       {name:"1",vvv:'1'}
