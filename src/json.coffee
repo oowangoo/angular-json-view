@@ -43,15 +43,8 @@ angular.module('json.view').directive('jsonView', ($compile) ->
             li = angular.element("<li class='type'></li>")
           else 
             li = angular.element("<div></div>")
-          switch that.type
-            when 1
-              li.addClass("type-array")
-            when 2
-              li.addClass('type-object')
-            when 3
-              li.addClass('type-number')
-            when 4
-              li.addClass('type-string')
+          if that.value
+            li.addClass("type-" + that.value.constructor.name)
           warp = angular.element("<div class='content-warp'></div>")
           warp.append(getPropertyHTML())
           li.append(warp)
