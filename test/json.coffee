@@ -18,8 +18,10 @@ describe('tttt',()->
     checkObj = (obj,ele)->
       l = getPropertyLength(obj)
       return l is $(ele).children("li").length
-    checkString = (str,ele)->
-      return $(ele).hasClass('type-string')
+    checkDefault = (v,ele)->
+      if v 
+        r = $(ele).hasClass('type-' + v.constructor.name)
+
     equalElement = (obj,ele)->
       r =  checkObj(obj,ele)
       return false unless r 
@@ -31,11 +33,9 @@ describe('tttt',()->
         index++
         if angular.isObject v 
           eleRoot = eleRoot.children().children("ul") #元素结构为li>div>ul
-          r = equalElement(v,eleRoot)
-        else if angular.isString(v) or angular.isNumber(v) #eleRoot 为li>span*
-          r = checkString(v,eleRoot)
-        else 
-          r = checkString(v,eleRoot)
+          r = equalElement(v,eleRoot) 
+        else #eleRoot 为li>span*
+          r = checkDefault(v,eleRoot)
         result = false unless r
       )
       return result
@@ -86,7 +86,7 @@ describe('tttt',()->
       value:"2"
       array:[{obj:"1",name:"2"},{obj:"21",name:"22"},{obj:"31",name:"32",value:["33.1",'33.2','33.3']}]
       obj:{
-        
+
       }
     }
   )
