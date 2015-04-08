@@ -1,6 +1,7 @@
 {
-  "name": "angularJsonView",
+  "name": "angular-json-view",
   "version": "0.0.1",
+  "main":"release/json.js",
   "ignore": [
     "**/.*",
     "test",
@@ -12,14 +13,14 @@
     "www"
   ],
   "dependencies": {
-    "angular": "~1.3.4"
+    "angular": "~1.3.x"
   },
   "devDependencies": {
     "jquery": "~2.1.1",
-    "angular-mocks": "~1.3.4"
+    "angular-mocks": "~1.3.x"
   },
   "resolutions": {
     "jquery": "~2.1.1",
-    "angular": "~1.3.4"
+    "angular": "~1.3.x"
   }
 }
