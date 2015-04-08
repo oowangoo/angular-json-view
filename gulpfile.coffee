@@ -61,10 +61,13 @@ gulp.task('connect',(done)->
     port:3000
   })
 )
-###
-test
-###
 
+gulp.task('build',['clean','compass','coffee','copy'])
+gulp.task('server',['build','watch','connect'])
+gulp.task('s',['server'])
+####################################
+# test task
+####################################
 gulp.task('coffee_test',['clean_test'],()->
   gulp.src(paths.test.src)
     .pipe(plumber())
@@ -72,38 +75,43 @@ gulp.task('coffee_test',['clean_test'],()->
     .on('error',gutil.log)
     .pipe(gulp.dest(paths.test.compile))
 )
-
 gulp.task('clean_test',()->
   gulp.src(paths.test.compile,{read:false}).pipe(clean())
 )
 gulp.task("watch_test",()->
   gulp.watch(paths.test.src,['coffee_test'])
 )
-
 gulp.task('karma',['build_test'],(done)->
   karma.start({
     configFile: __dirname + '/karma.conf.js'
   },done)
 )
-gulp.task('karma_single',['build_test'],(done)->
+gulp.task('build_test',['clean_test','build','coffee_test'])
+gulp.task("test",['build_test','watch_test','karma'])
+
+####################################
+# release task
+####################################
+
+gulp.task('karma_single',['build_test','copy_release'],(done)->
   karma.start({
     configFile: __dirname + '/karma.conf.js'
     singleRun:true
+    files:['bower_components/jquery/dist/jquery.js','bower_components/angular/angular.js','bower_components/angular-mocks/angular-mocks.js','release/*.js','test/compile/**/*.js']
   },done)
 )
-gulp.task('build',['clean','compass','coffee','copy'])
-gulp.task('build_test',['build','clean_test','coffee_test'])
-
+gulp.task('copy_release',()->
+  gulp.src(["www/json.js","www/style/json.css"])
+    .pipe(gulp.dest("release/"))
+)
+gulp.task('releae_test',['karma_single'])
 gulp.task('bump',['karma_single'],()->
   gulp.src(['./package.json','./bower.json'])
     .pipe(bump({type:'patch'}))
     .pipe(gulp.dest('./'))
 )
 
-gulp.task("test",['build_test','watch_test','karma'])
-gulp.task('server',['build','watch','connect'])
 
-gulp.task("release",['build_test','bump'])
 
+gulp.task("release",['releae_test','bump'])
 gulp.task('r',['release'])
-gulp.task('s',['server'])
