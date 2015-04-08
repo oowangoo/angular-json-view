@@ -17,7 +17,7 @@ paths = {
 }
 
 gulp.task('compass',(done)->
-  gulp.src("src/**/*.scss")
+  gulp.src(paths.compass)
     .pipe(plumber())
     .pipe(compass({
       sass:"src"
