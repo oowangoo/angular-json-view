@@ -7,3 +7,4 @@ www/
 vendor/
 .idea/
 test/compile/
+.DS_Store
