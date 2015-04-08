@@ -1,7 +1,6 @@
 @charset "UTF-8";
 @import 'compass/css3';
 .json-view{
-  border:1px solid;
   margin-bottom: 20px;
   ul{
     list-style-type: none;
@@ -51,5 +50,15 @@
   }
   .property{
     font-weight: bold;
+  }
+  .type-String{
+    .value{
+      &:before{
+        content:"\"";
+      }
+      &:after{
+        content:"\"";
+      }
+    }
   }
 }
