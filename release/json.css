@@ -1,0 +1,50 @@
+.json-view {
+  margin-bottom: 20px;
+}
+.json-view ul {
+  list-style-type: none;
+  margin: 0px;
+}
+.json-view ul li {
+  position: relative;
+}
+.json-view .content-warp {
+  display: inline-block;
+  border: 1px solid transparent;
+}
+.json-view .collapser {
+  display: none;
+  cursor: pointer;
+}
+.json-view .collapser:before {
+  content: "-";
+}
+.json-view .ellipsis {
+  display: none;
+}
+.json-view .collapsible .collapser {
+  display: inline;
+}
+.json-view .collapsible.selected ul {
+  display: none;
+}
+.json-view .collapsible.selected .collapser:before {
+  content: "+";
+}
+.json-view .collapsible.selected .ellipsis {
+  display: inline;
+}
+.json-view .abs-left {
+  position: absolute;
+  left: -1.5em;
+  padding: 0px 6px;
+}
+.json-view .property {
+  font-weight: bold;
+}
+.json-view .type-String .value:before {
+  content: "\"";
+}
+.json-view .type-String .value:after {
+  content: "\"";
+}
