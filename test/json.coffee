@@ -21,7 +21,9 @@ describe('tttt',()->
     checkDefault = (v,ele)->
       if v 
         r = $(ele).hasClass('type-' + v.constructor.name)
-
+        return r if !r or !angular.isString(v)
+        valueEle = $(ele).find(".value")
+        return valueEle.text() is v
     equalElement = (obj,ele)->
       r =  checkObj(obj,ele)
       return false unless r 
@@ -32,7 +34,7 @@ describe('tttt',()->
         eleRoot = $(children[index])
         index++
         if angular.isObject v 
-          eleRoot = eleRoot.children().children("ul") #元素结构为li>div>ul
+          eleRoot = eleRoot.find("ul:eq(0)") #元素结构为li>div>ul
           r = equalElement(v,eleRoot) 
         else #eleRoot 为li>span*
           r = checkDefault(v,eleRoot)
