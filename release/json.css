@@ -1,12 +1,54 @@
 .json-view {
   margin-bottom: 20px;
 }
+.json-view .root {
+  display: block;
+}
+.json-view .root.type-Object:before {
+  content: "{";
+}
+.json-view .root.type-Object:after {
+  content: "}";
+}
+.json-view .root.type-Array:before {
+  content: "[";
+}
+.json-view .root.type-Array:after {
+  content: "]";
+}
 .json-view ul {
   list-style-type: none;
   margin: 0px;
 }
 .json-view ul li {
   position: relative;
+}
+.json-view ul li > .content-warp:after {
+  content: ",";
+}
+.json-view ul li:last-child > .content-warp:after {
+  content: "";
+}
+.json-view .property {
+  font-weight: bold;
+}
+.json-view .type-String > .content-warp > .value:before {
+  content: "\"";
+}
+.json-view .type-String > .content-warp > .value:after {
+  content: "\"";
+}
+.json-view .type-Object > .content-warp > .value:before {
+  content: "{";
+}
+.json-view .type-Object > .content-warp > .value:after {
+  content: "}";
+}
+.json-view .type-Array > .content-warp > .value:before {
+  content: "[";
+}
+.json-view .type-Array > .content-warp > .value:after {
+  content: "]";
 }
 .json-view .content-warp {
   display: inline-block;
@@ -19,9 +61,6 @@
 .json-view .collapser:before {
   content: "-";
 }
-.json-view .ellipsis {
-  display: none;
-}
 .json-view .collapsible .collapser {
   display: inline;
 }
@@ -31,20 +70,14 @@
 .json-view .collapsible.selected .collapser:before {
   content: "+";
 }
-.json-view .collapsible.selected .ellipsis {
-  display: inline;
+.json-view .collapsible.selected.type-Object .value:before {
+  content: "{...";
+}
+.json-view .collapsible.selected.type-Array .value:before {
+  content: "[...";
 }
 .json-view .abs-left {
   position: absolute;
   left: -1.5em;
   padding: 0px 6px;
-}
-.json-view .property {
-  font-weight: bold;
-}
-.json-view .type-String .value:before {
-  content: "\"";
-}
-.json-view .type-String .value:after {
-  content: "\"";
 }
