@@ -112,12 +112,16 @@
               default:
                 typeDefault();
             }
-            return this.root;
+            if (this.$parent) {
+              return this.root;
+            } else {
+              return this.root.children().children().addClass("root").removeClass("value").addClass('type-' + scope.object.constructor.name);
+            }
           };
           return this;
         };
         init = function() {
-          var ele, html, jsonRootElement, root, type;
+          var ele, html, root, type;
           iElement.html('');
           html = "";
           type = objectType(scope.object);
@@ -127,8 +131,7 @@
           }
           root = new objectHTML(null, scope.object);
           scope.$rootObject = root;
-          jsonRootElement = root.toHTML().find("span.value:eq(0)").addClass("root").removeClass("value").addClass('type-' + scope.object.constructor.name);
-          ele = $compile(jsonRootElement)(scope);
+          ele = $compile(root.toHTML())(scope);
           return iElement.append(ele);
         };
         scope.toggle = function(event) {
