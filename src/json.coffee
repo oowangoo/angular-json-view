@@ -62,7 +62,6 @@ angular.module('json.view').directive('jsonView', ($compile) ->
 
         typeObject = ()->
           valueSpan = angular.element("<span class='value'></span>")
-          # vl.append("<span class='before-cls'>#{kuohao[that.type - 3][0]}</span>")
           that.warp.append(valueSpan)
           if that.hasChild
             that.root.addClass("collapsible").append(collapser)
@@ -77,17 +76,6 @@ angular.module('json.view').directive('jsonView', ($compile) ->
               ul.append(li)
             )
             valueSpan.append(ul)
-            # if array.length > 0
-            #   last = array[array.length - 1]
-            #   # last.find('span.spilt').remove()  #会删除子集下的
-            #   cl = last.children().children() #li>div>span.name+span.value...
-            #   angular.element(cl[cl.length - 1 ]).remove() #最后一个元素，
-            # for ai in array
-            #   ul.append(ai)
-            # that.warp.append(ul)
-            # that.warp.append("<span class='ellipsis'>...</span>")
-          # that.warp.append("<span class='after-cls'>#{kuohao[that.type - 3][1]}</span>")
-
         hasOwnerChild = ()->
           if that.type < 3
             return false
@@ -109,7 +97,13 @@ angular.module('json.view').directive('jsonView', ($compile) ->
               typeObject()
             else 
               typeDefault()
-          return @root
+          if @$parent
+            return @root
+          else 
+            # @root.find(classSelect) which not in angular.element
+            # return @root.find("span.value:eq(0)").addClass("root").removeClass("value").addClass('type-' + scope.object.constructor.name)
+            #此处可能过于依赖dom结构
+            return @root.children().children().addClass("root").removeClass("value").addClass('type-' + scope.object.constructor.name)
         return @
       init = ()->
         iElement.html('')
@@ -120,8 +114,7 @@ angular.module('json.view').directive('jsonView', ($compile) ->
           return ;
         root = new objectHTML(null,scope.object)
         scope.$rootObject = root
-        jsonRootElement = root.toHTML().find("span.value:eq(0)").addClass("root").removeClass("value").addClass('type-' + scope.object.constructor.name)
-        ele = $compile(jsonRootElement)(scope)
+        ele = $compile(root.toHTML())(scope)
         iElement.append(ele)
 
       scope.toggle = (event)->
