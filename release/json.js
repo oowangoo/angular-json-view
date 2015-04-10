@@ -132,7 +132,7 @@
           iElement.html('');
           html = "";
           type = objectType(scope.object);
-          if (type > 2) {
+          if (type > 2 || type === 0) {
             console.error('the object must be [object]', scope.object);
             return;
           }
@@ -148,10 +148,12 @@
           li.toggleClass("selected");
           event.stopPropagation();
         };
-        scope.$watch('object', function() {
+        if (scope.object) {
+          init();
+        }
+        return scope.$watch('object', function() {
           return init();
         });
-        return init();
       }
     };
     return directiveDefinitionObject;
