@@ -14,25 +14,31 @@
       link: function(scope, iElement, iAttrs) {
         var init, objectHTML, objectType;
         objectType = function(obj) {
-          if (angular.isArray(obj)) {
+          if (angular.isNumber(obj)) {
             return 1;
-          } else if (angular.isObject(obj)) {
-            return 2;
-          } else if (angular.isNumber(obj)) {
-            return 3;
           } else if (angular.isString(obj)) {
+            return 2;
+          } else if (angular.isArray(obj)) {
+            return 3;
+          } else if (angular.isObject(obj)) {
             return 4;
           }
           return 0;
         };
         objectHTML = function(name1, value, $parent) {
-          var collapser, complete, getPropertyHTML, getRootElement, hasOwnerChild, kuohao, span_spilt, that, typeDefault, typeObject;
+          var collapser, complete, getPropertyHTML, getRootElement, hasOwnerChild, kuohao, level, span_spilt, that, typeDefault, typeObject;
           this.name = name1;
           this.value = value;
           this.$parent = $parent;
           if (this.$parent) {
             this.$parent.child = this;
+            level = this.$parent.getLevel() + 1;
+          } else {
+            level = 0;
           }
+          this.getLevel = function() {
+            return level;
+          };
           kuohao = [['[', ']'], ['{', '}']];
           this.type = objectType(this.value);
           that = this;
@@ -47,11 +53,7 @@
           };
           getRootElement = function() {
             var li, warp;
-            if (that.$parent) {
-              li = angular.element("<li class='type'></li>");
-            } else {
-              li = angular.element("<div></div>");
-            }
+            li = angular.element("<li class='type'></li>");
             if (that.value) {
               li.addClass("type-" + that.value.constructor.name);
             }
@@ -65,41 +67,28 @@
             return that.warp.append('<span class="value">' + that.value + '</span>');
           };
           typeObject = function() {
-            var ai, array, cl, i, last, len, ul;
-            that.warp.append("<span class='before-cls'>" + kuohao[that.type - 1][0] + "</span>");
+            var array, ul, valueSpan;
+            valueSpan = angular.element("<span class='value'></span>");
+            that.warp.append(valueSpan);
             if (that.hasChild) {
-              that.root.addClass("collapsible");
-              that.warp.append(collapser);
+              that.root.addClass("collapsible").append(collapser);
               ul = angular.element("<ul></ul>");
               array = [];
               angular.forEach(that.value, function(v, k) {
-                var h, li, name, wp;
+                var h, li, name;
                 name = k;
-                if (that.type === 1) {
+                if (that.type === 3) {
                   name = null;
                 }
                 h = new objectHTML(name, v, that);
                 li = h.toHTML();
-                wp = li.children();
-                wp.append(span_spilt);
-                return array.push(li);
+                return ul.append(li);
               });
-              if (array.length > 0) {
-                last = array[array.length - 1];
-                cl = last.children().children();
-                angular.element(cl[cl.length - 1]).remove();
-              }
-              for (i = 0, len = array.length; i < len; i++) {
-                ai = array[i];
-                ul.append(ai);
-              }
-              that.warp.append(ul);
-              that.warp.append("<span class='ellipsis'>...</span>");
+              return valueSpan.append(ul);
             }
-            return that.warp.append("<span class='after-cls'>" + kuohao[that.type - 1][1] + "</span>");
           };
           hasOwnerChild = function() {
-            if (that.type > 2) {
+            if (that.type < 3) {
               return false;
             }
             that.hasChild = false;
@@ -116,8 +105,8 @@
           this.toHTML = function() {
             complete();
             switch (this.type) {
-              case 1:
-              case 2:
+              case 3:
+              case 4:
                 typeObject();
                 break;
               default:
@@ -128,30 +117,33 @@
           return this;
         };
         init = function() {
-          var ele, html, root, type;
+          var ele, html, jsonRootElement, root, type;
           iElement.html('');
           html = "";
           type = objectType(scope.object);
-          if (type > 2) {
+          if (type < 3) {
             console.error('the object must be [object]', scope.object);
             return;
           }
           root = new objectHTML(null, scope.object);
           scope.$rootObject = root;
-          ele = $compile(root.toHTML())(scope);
+          jsonRootElement = root.toHTML().find("span.value:eq(0)").addClass("root").removeClass("value").addClass('type-' + scope.object.constructor.name);
+          ele = $compile(jsonRootElement)(scope);
           return iElement.append(ele);
         };
         scope.toggle = function(event) {
           var li, target;
           target = event.target;
-          li = angular.element(target).parent().parent();
+          li = angular.element(target).parent();
           li.toggleClass("selected");
           event.stopPropagation();
         };
-        scope.$watch('object', function() {
+        if (scope.object) {
+          init();
+        }
+        return scope.$watch('object', function() {
           return init();
         });
-        return init();
       }
     };
     return directiveDefinitionObject;

@@ -10,19 +10,26 @@ angular.module('json.view').directive('jsonView', ($compile) ->
     template: '''<div class="json-view"></div>'''
     link: (scope, iElement, iAttrs) ->
       objectType = (obj)->
-        if angular.isArray(obj)
-          return 1;
-        else if  angular.isObject(obj)
-          return 2;
-        else if angular.isNumber(obj)
-          return 3
+        if angular.isNumber(obj)
+          return 1
         else if angular.isString(obj) 
+          return 2;
+        else if angular.isArray(obj) # if type > 2 则是object
+          return 3;
+        else if  angular.isObject(obj)
           return 4;
         return 0
 
       objectHTML = (@name,@value,@$parent)->
         if @$parent
           @$parent.child = @
+          level = @$parent.getLevel() + 1
+        else 
+          level = 0
+        #防止object中出现无限递归
+        @getLevel = ()->
+          return level
+        
         kuohao = [
           ['[',']']
           ['{','}']
@@ -32,17 +39,16 @@ angular.module('json.view').directive('jsonView', ($compile) ->
         that = @
         #折叠对象        
         collapser = "<span class='abs-left collapser' ng-click='toggle($event)'></span>"
+        #每行间分隔对象
         span_spilt = "<span class='spilt'>,</span>"
+
         getPropertyHTML = ()->
           if that.name 
             "<span class='property'>#{that.name}</span>: "
           else 
             ''
         getRootElement = ()->
-          if that.$parent
-            li = angular.element("<li class='type'></li>")
-          else 
-            li = angular.element("<div></div>")
+          li = angular.element("<li class='type'></li>")
           if that.value
             li.addClass("type-" + that.value.constructor.name)
           warp = angular.element("<div class='content-warp'></div>")
@@ -55,36 +61,35 @@ angular.module('json.view').directive('jsonView', ($compile) ->
           that.warp.append('<span class="value">' + that.value + '</span>')
 
         typeObject = ()->
-          that.warp.append("<span class='before-cls'>#{kuohao[that.type - 1][0]}</span>")
-
+          valueSpan = angular.element("<span class='value'></span>")
+          # vl.append("<span class='before-cls'>#{kuohao[that.type - 3][0]}</span>")
+          that.warp.append(valueSpan)
           if that.hasChild
-            that.root.addClass("collapsible")
-            that.warp.append(collapser)
+            that.root.addClass("collapsible").append(collapser)
             ul = angular.element("<ul></ul>")
             array = []
             angular.forEach(that.value,(v,k)->
               name = k
-              if that.type is 1
+              if that.type is 3
                 name = null
               h = new objectHTML(name,v,that)
               li = h.toHTML()
-              wp = li.children()
-              wp.append(span_spilt)
-              array.push li
+              ul.append(li)
             )
-            if array.length > 0
-              last = array[array.length - 1]
-              # last.find('span.spilt').remove()  #会删除子集下的
-              cl = last.children().children() #li>div>span.name+span.value...
-              angular.element(cl[cl.length - 1 ]).remove() #最后一个元素，
-            for ai in array
-              ul.append(ai)
-            that.warp.append(ul)
-            that.warp.append("<span class='ellipsis'>...</span>")
-          that.warp.append("<span class='after-cls'>#{kuohao[that.type - 1][1]}</span>")
+            valueSpan.append(ul)
+            # if array.length > 0
+            #   last = array[array.length - 1]
+            #   # last.find('span.spilt').remove()  #会删除子集下的
+            #   cl = last.children().children() #li>div>span.name+span.value...
+            #   angular.element(cl[cl.length - 1 ]).remove() #最后一个元素，
+            # for ai in array
+            #   ul.append(ai)
+            # that.warp.append(ul)
+            # that.warp.append("<span class='ellipsis'>...</span>")
+          # that.warp.append("<span class='after-cls'>#{kuohao[that.type - 3][1]}</span>")
 
         hasOwnerChild = ()->
-          if that.type > 2
+          if that.type < 3
             return false
           that.hasChild = false
           angular.forEach(that.value,(v,k)->
@@ -100,7 +105,7 @@ angular.module('json.view').directive('jsonView', ($compile) ->
         @toHTML = ()->
           complete()
           switch @type
-            when 1,2
+            when 3,4
               typeObject()
             else 
               typeDefault()
@@ -110,19 +115,19 @@ angular.module('json.view').directive('jsonView', ($compile) ->
         iElement.html('')
         html  = ""
         type = objectType(scope.object)
-        if type > 2 or type  is 0 
+        if type < 3 
           console.error 'the object must be [object]',scope.object
           return ;
         root = new objectHTML(null,scope.object)
         scope.$rootObject = root
-
-        ele = $compile(root.toHTML())(scope)
+        jsonRootElement = root.toHTML().find("span.value:eq(0)").addClass("root").removeClass("value").addClass('type-' + scope.object.constructor.name)
+        ele = $compile(jsonRootElement)(scope)
         iElement.append(ele)
 
       scope.toggle = (event)->
         target =event.target
         #jqite no support parents method
-        li = angular.element(target).parent().parent() 
+        li = angular.element(target).parent()
         li.toggleClass("selected")
         event.stopPropagation()
         return ;

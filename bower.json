@@ -1,7 +1,7 @@
 {
   "name": "angular-json-view",
-  "version": "0.0.1",
-  "main":"release/json.js",
+  "version": "0.0.2",
+  "main": "release/json.js",
   "ignore": [
     "**/.*",
     "test",
