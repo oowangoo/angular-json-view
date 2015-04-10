@@ -2,18 +2,92 @@
 @import 'compass/css3';
 .json-view{
   margin-bottom: 20px;
+  .root{
+    display:block;
+    &.type-Object{
+      &:before{
+        content:"{";
+      }
+      &:after{
+        content:"}";
+      }
+    }
+    &.type-Array{
+      &:before{
+        content:"[";
+      }
+      &:after{
+        content:"]";
+      }
+    }
+  }
+//除最后一行外每一行加，
   ul{
     list-style-type: none;
     margin:0px;
     li{
       position: relative;
+      >.content-warp{
+        &:after{
+          content:",";
+        }
+      }
+      &:last-child{
+        >.content-warp{
+          &:after{
+            content:"";
+          }
+        }
+      }
+    }
+  }
+  .property{
+    font-weight: bold;
+  }
+//字符串类型前后加""
+  .type-String{
+    >.content-warp{
+      >.value{
+        &:before{
+          content:"\"";
+        }
+        &:after{
+          content:"\"";
+        }
+      }
+    }
+  }
+//object类型前后加{}
+  .type-Object{
+    >.content-warp{
+      >.value{
+        &:before{
+          content:"{";
+        }
+        &:after{
+          content:"}";
+        }
+      }
+    }
+  }
+//array类型前后加[]
+  .type-Array{
+    >.content-warp{
+      >.value{
+        &:before{
+          content:"[";
+        }
+        &:after{
+          content:"]";
+        }
+      }
     }
   }
   .content-warp{
     display: inline-block;
     border:1px solid transparent;
   }
-
+//收缩折叠样式
   .collapser{
     display: none;
     cursor: pointer;
@@ -21,9 +95,7 @@
       content:"-"
     }
   }
-  .ellipsis{
-    display: none;
-  }
+
 
   .collapsible{
     .collapser{
@@ -38,8 +110,19 @@
           content:"+";
         }
       }
-      .ellipsis{
-        display: inline;
+      &.type-Object{
+        .value{
+          &:before{
+            content:"{...";
+          }
+        }
+      }
+      &.type-Array{
+        .value{
+          &:before{
+            content:"[...";
+          }
+        }
       }
     }
   }
@@ -48,17 +131,5 @@
     left: -1.5em;
     padding:0px 6px;
   }
-  .property{
-    font-weight: bold;
-  }
-  .type-String{
-    .value{
-      &:before{
-        content:"\"";
-      }
-      &:after{
-        content:"\"";
-      }
-    }
-  }
+
 }
