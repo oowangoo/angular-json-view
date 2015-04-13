@@ -20,7 +20,10 @@ describe('tttt',()->
       return l is $(ele).children("li").length
     checkDefault = (v,ele)->
       if v 
-        r = $(ele).hasClass('type-' + v.constructor.name)
+        if angular.isNumber v
+          r = $(ele).hasClass('type-Number')
+        else if angular.isString v
+          r = $(ele).hasClass('type-String')
         return r if !r or !angular.isString(v)
         valueEle = $(ele).find(".value")
         return valueEle.text() is v
@@ -34,6 +37,11 @@ describe('tttt',()->
         eleRoot = $(children[index])
         index++
         if angular.isObject v 
+          if angular.isArray v
+            expect(eleRoot.hasClass('type-Array')).toBeTruthy()
+          else 
+            expect(eleRoot.hasClass('type-Object')).toBeTruthy()
+
           eleRoot = eleRoot.find("ul:eq(0)") #元素结构为li>div>ul
           r = equalElement(v,eleRoot) 
         else #eleRoot 为li>span*
