@@ -12,7 +12,7 @@
       },
       template: '<div class="json-view"></div>',
       link: function(scope, iElement, iAttrs) {
-        var init, objectHTML, objectType;
+        var getClassNameByType, init, objectHTML, objectType;
         objectType = function(obj) {
           if (angular.isNumber(obj)) {
             return 1;
@@ -24,6 +24,29 @@
             return 4;
           }
           return 0;
+        };
+        getClassNameByType = function(obj, type) {
+          var s;
+          if (!type) {
+            type = objectType(obj);
+          }
+          if ((0 < type && type > 4)) {
+            return;
+          }
+          switch (type) {
+            case 1:
+              s = 'Number';
+              break;
+            case 2:
+              s = 'String';
+              break;
+            case 3:
+              s = 'Array';
+              break;
+            case 4:
+              s = 'Object';
+          }
+          return 'type-' + s;
         };
         objectHTML = function(name1, value, $parent) {
           var collapser, complete, getPropertyHTML, getRootElement, hasOwnerChild, kuohao, level, span_spilt, that, typeDefault, typeObject;
@@ -55,7 +78,7 @@
             var li, warp;
             li = angular.element("<li class='type'></li>");
             if (that.value) {
-              li.addClass("type-" + that.value.constructor.name);
+              li.addClass(getClassNameByType(that.value, that.type));
             }
             warp = angular.element("<div class='content-warp'></div>");
             warp.append(getPropertyHTML());
@@ -115,7 +138,7 @@
             if (this.$parent) {
               return this.root;
             } else {
-              return this.root.children().children().addClass("root").removeClass("value").addClass('type-' + scope.object.constructor.name);
+              return this.root.children().children().addClass("root").removeClass("value").addClass(getClassNameByType(that.value, that.type));
             }
           };
           return this;
