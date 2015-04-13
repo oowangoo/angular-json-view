@@ -19,7 +19,22 @@ angular.module('json.view').directive('jsonView', ($compile) ->
         else if  angular.isObject(obj)
           return 4;
         return 0
-
+      getClassNameByType = (obj,type)->
+        # v = obj.constructor.name
+        # return 'type-' + v if v
+        unless type
+          type = objectType(obj)
+        return if 0 < type > 4 
+        switch type
+          when 1 
+            s = 'Number'
+          when 2
+            s ='String'
+          when 3
+            s = 'Array'
+          when 4
+            s = 'Object'
+        return 'type-' + s
       objectHTML = (@name,@value,@$parent)->
         if @$parent
           @$parent.child = @
@@ -50,7 +65,7 @@ angular.module('json.view').directive('jsonView', ($compile) ->
         getRootElement = ()->
           li = angular.element("<li class='type'></li>")
           if that.value
-            li.addClass("type-" + that.value.constructor.name)
+            li.addClass(getClassNameByType(that.value,that.type))
           warp = angular.element("<div class='content-warp'></div>")
           warp.append(getPropertyHTML())
           li.append(warp)
@@ -103,7 +118,7 @@ angular.module('json.view').directive('jsonView', ($compile) ->
             # @root.find(classSelect) which not in angular.element
             # return @root.find("span.value:eq(0)").addClass("root").removeClass("value").addClass('type-' + scope.object.constructor.name)
             #此处可能过于依赖dom结构
-            return @root.children().children().addClass("root").removeClass("value").addClass('type-' + scope.object.constructor.name)
+            return @root.children().children().addClass("root").removeClass("value").addClass(getClassNameByType(that.value,that.type))
         return @
       init = ()->
         iElement.html('')
