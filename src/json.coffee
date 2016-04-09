@@ -1,5 +1,7 @@
 angular.module('json.view',['ng'])
-angular.module('json.view').directive('jsonView', ($compile) ->
+# .provider("jsonViewProvider",()->
+# )
+.directive('jsonView', ($compile) ->
   directiveDefinitionObject =
     priority: 10
     restrict: 'E'
@@ -34,7 +36,7 @@ angular.module('json.view').directive('jsonView', ($compile) ->
             s = 'Array'
           when 4
             s = 'Object'
-        return 'type-' + s
+        return 'type-' + s.toLowerCase()
       objectHTML = (@name,@value,@$parent)->
         if @$parent
           @$parent.child = @
@@ -133,7 +135,7 @@ angular.module('json.view').directive('jsonView', ($compile) ->
         iElement.append(ele)
 
       scope.toggle = (event)->
-        target =event.target
+        target = event.target
         #jqite no support parents method
         li = angular.element(target).parent()
         li.toggleClass("selected")

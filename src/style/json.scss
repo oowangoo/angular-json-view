@@ -45,7 +45,7 @@
     font-weight: bold;
   }
 //字符串类型前后加""
-  .type-String{
+  .type-string{
     >.content-warp{
       >.value{
         &:before{
@@ -58,7 +58,7 @@
     }
   }
 //object类型前后加{}
-  .type-Object{
+  .type-object{
     >.content-warp{
       >.value{
         &:before{
@@ -71,7 +71,7 @@
     }
   }
 //array类型前后加[]
-  .type-Array{
+  .type-array{
     >.content-warp{
       >.value{
         &:before{
